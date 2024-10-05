@@ -1,0 +1,30 @@
+.modal {
+  position: absolute;
+  width: 800px;
+  height: 500px;
+  top: calc(50% - 300px);
+  left: calc(50% - 400px);
+  cursor: default;
+  color: azure;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(33, 33, 34, 0.867);
+}
+
+.btn {
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  background-color: #999797;
+  &:hover {
+    border-color: grey;
+  }
+}
