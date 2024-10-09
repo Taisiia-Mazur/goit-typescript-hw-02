@@ -8,35 +8,45 @@ import ImageModal from "../ImageModal/ImageModal";
 import SearchBar from "../SearchBar/SearchBar";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import getPhotos from "../../Api";
+import {IPhoto, TypeForApi } from "../../generalTypes";
+
+
 
 export default function App() {
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [searchImg, setSearchImg] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [imgForModal, setImgForModal] = useState({});
-
+  const [images, setImages] = useState<IPhoto[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [searchImg, setSearchImg] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [imgForModal, setImgForModal] = useState<IPhoto>({ id: "",
+  description: "",
+  alt_description: "",
+  urls: {
+    regular: "",
+    small: "",
+  },
+  likes: 0,});
+  
 
   useEffect(() => {
     if (searchImg === "") {
       return;
     }
-    async function getRequest(searchImg, page) {
+    async function getRequest(searchImg:string, page:number) {
       try {
         setLoading(true);
         setError(false);
 
-        const respons = await getPhotos(searchImg, page);
-        if (respons.data.total_pages === 0) {
+        const respons = await getPhotos<TypeForApi>(searchImg, page);
+        if (respons.total_pages === 0) {
           toast.error(
             "There is not images matched your search. Please, try again.", { position: 'top-right',}
           );
         }
-        setTotalPages(respons.data.total_pages);
-        setImages((prev) => [...prev, ...respons.data.results]);
+        setTotalPages(respons.total_pages);
+        setImages((prev) => [...prev, ...respons.results]);
       } catch (error) {
         setError(true);
       } finally {
@@ -46,10 +56,10 @@ export default function App() {
     getRequest(searchImg, page);
   }, [searchImg, page]);
 
-  const imgOfSearch = (img) => setSearchImg(img);
+  const imgOfSearch = (img:string) => setSearchImg(img);
 
-  const imgModal = (src, likes, altDescription, description) =>
-    setImgForModal({ src, likes, altDescription, description });
+  const imgModal = (imgForModal:IPhoto) =>
+    setImgForModal(imgForModal);
 
   const openModal = () => {
     setIsOpen(true);
@@ -58,7 +68,7 @@ export default function App() {
     setIsOpen(false);
   };
 
-  const handleSubmit = (searchImg) => {
+  const handleSubmit = (searchImg:string) => {
     imgOfSearch(searchImg);
     setImages([]);
     setPage(1);
